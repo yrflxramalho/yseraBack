@@ -1,0 +1,1 @@
+/home/yrflx/projects/ysera_backend/base/6ann.pdb;hb=0;sb=0;db=0;lpi=0,tshaped=0,inter=0,paralel=0;vdw=0;ctn=0;an=0;spi=0

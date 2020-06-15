@@ -1,0 +1,1 @@
+/home/yrflx/projects/ysera_backend/base/7bz5.pdb;hb=0;sb=22;db=10;lpi=121,tshaped=0,inter=0,paralel=121;vdw=999;ctn=4;an=0;spi=11
