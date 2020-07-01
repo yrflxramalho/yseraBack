@@ -19,7 +19,7 @@ AAAN_BEG_DEFAULT = 2.0
 AAAN_END_DEFAULT = 3.0
 AASPI_DEFAULT = 5.3
 AACTN_BEG_DEFAULT = 3.4
-AACTN_END_DEFAULT = 3.4
+AACTN_END_DEFAULT = 4.0
 
 def ysera(filename, params):
     
@@ -44,6 +44,10 @@ def ysera(filename, params):
     if(not("aactn_end" in params)):
         params['aactn_end'] = AACTN_END_DEFAULT
 
+    print(params)
+    
+    res = myfunction(filename, params)
+    return res 
 
 def myfunction(filename, params):
     string1 = ""
@@ -341,18 +345,18 @@ def myfunction(filename, params):
 
     f.write(string2)
     f.close()
-    string1 = (filename + ";hb={};sb={};db={};lpi={},tshaped={},inter={},paralel={};vdw={};ctn={};an={};spi={}".format(hb,
-                                                                                                                    sb,
-                                                                                                                    db,
-                                                                                                                    lpi,
-                                                                                                                    tshaped,
-                                                                                                                    inter,
-                                                                                                                    paralel,
-                                                                                                                    vdw,
-                                                                                                                    ctn,
-                                                                                                                    an,
-                                                                                                                spi))   
-    
-
+    string1 = { "filename" : filename, 
+        "hb" : hb,
+        "sb" : sb,
+        "db" : db,
+        "lpi" : lpi,
+        "tshaped": tshaped,
+        "inter" : inter,
+        "paralel": paralel,
+        "vdw": vdw,
+        "ctn": ctn,
+        "an": an,
+        "spi": spi
+    }
     return string1
  
