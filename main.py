@@ -2,7 +2,7 @@ from flask import Flask, url_for, send_from_directory, request, render_template
 import os
 import json
 from werkzeug.utils import secure_filename
-from ysera import myfunction
+from ysera import myfunction, ysera
 from flask_cors import CORS
 import time
 
@@ -12,15 +12,23 @@ CORS(app)
 
 PROJECT_HOME = os.path.dirname(os.path.realpath(__file__))
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['POST'])
 def api_root():
-    x = myfunction()
+    # f = request.files['file']
     
-    return json.dumps(x)
+    content = request.form.get("params")
+    params = json.loads(content)    
+    ysera('filename', params)
+    
+    return json.dumps(params)
+
 
 @app.route('/ysera', methods = ['POST'])
 def getFile():
     f = request.files['file']
+    
+    content = request.form.get("params")
+    params = json.loads(content)
     
     millis = int(round(time.time() * 1000))
     name = 'file_'+str(millis)+'.pdb'
@@ -35,9 +43,9 @@ def getFile():
 @app.route('/record', methods=['POST'])
 def download():
     data = request.get_json()
-    print(data)
+    print(data) 
     
     return send_from_directory(directory='output', filename=data['filename'])
     
 
-app.run(host='0.0.0.0')
+app.run(host='0.0.0.0', debug=True)

@@ -10,8 +10,42 @@ import gzip
 import json
 PROJECT_HOME = os.path.dirname(os.path.realpath(__file__))
 
+HB_DEFAULT = 3.1
+SB_DEFAULT = 4.0
+DB_DEFAULT = 2.2
+VDW_DEFAULT = 5.5
+PS_DEFAULT = 7.2
+AAAN_BEG_DEFAULT = 2.0
+AAAN_END_DEFAULT = 3.0
+AASPI_DEFAULT = 5.3
+AACTN_BEG_DEFAULT = 3.4
+AACTN_END_DEFAULT = 3.4
 
-def myfunction(filename):
+def ysera(filename, params):
+    
+    if(not("hb" in params)):
+        params['hb'] = HB_DEFAULT
+    if(not("sb" in params)):
+        params['sb'] = SB_DEFAULT
+    if(not("db" in params)):
+        params['db'] = DB_DEFAULT
+    if(not("vdw" in params)):
+        params['vdw'] = VDW_DEFAULT
+    if(not("ps" in params)):
+        params['ps'] = PS_DEFAULT
+    if(not("aaan_beg" in params)):
+        params['aaan_beg'] = AAAN_BEG_DEFAULT
+    if(not("aaan_end" in params)):
+        params['aaan_end'] = AAAN_END_DEFAULT
+    if(not("aaspi" in params)):
+        params['aaspi'] = AASPI_DEFAULT
+    if(not("aactn_beg" in params)):
+        params['aactn_beg'] = AACTN_BEG_DEFAULT
+    if(not("aactn_end" in params)):
+        params['aactn_end'] = AACTN_END_DEFAULT
+
+
+def myfunction(filename, params):
     string1 = ""
     string2 = ""
     
@@ -161,25 +195,25 @@ def myfunction(filename):
             distance = New[j].iloc[i]
             # print(chaincode1,chaincode2)
             # HYDROGEN BOND---HYDROGEN BOND---HYDROGEN BOND---HYDROGEN BOND---HYDROGEN BOND---HYDROGEN BOND---
-            if atom1 in lighbacep[:] and atom2 in lighbdono[:] and 0.0 < distance < 3.1:
+            if atom1 in lighbacep[:] and atom2 in lighbdono[:] and 0.0 < distance < params['hb']:
                 hb += 1
                 string2 = (
                     'Hydrogen_Bond' + '\t\t' + atom1 + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + atom2 + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
                         distance) + '\n')
-            elif atom1 in lighbdono[:] and atom2 in lighbacep[:] and 0.0 < distance < 3.1:
+            elif atom1 in lighbdono[:] and atom2 in lighbacep[:] and 0.0 < distance < params['hb']:
                 hb += 1
                 string2 = string2 + (
                     'Hydrogen_Bond' + '\t\t' + atom1 + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + atom2 + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
                         distance) + '\n')
             # SALTY_BRIDGE-----SALTY_BRIDGE-----SALTY_BRIDGE-----SALTY_BRIDGE-----SALTY_BRIDGE-----SALTY_BRIDGE-----
             if aa1 in aasbpos[:] and atom1 in ligsb2[:] and aa2 in aasbneg[:] and atom2 in ligsb1[
-                                                                                            :] and 0.0 < distance < 4.0:
+                                                                                            :] and 0.0 < distance < params['sb']:
                 sb += 1
                 string2 = string2 + (
                     'Salt_Bridge' + '\t\t' + atom1 + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + atom2 + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
                         distance) + '\n')
             elif aa1 in aasbneg[:] and atom1 in ligsb1[:] and aa2 in aasbpos[:] and atom2 in ligsb2[
-                                                                                                :] and 0.0 < distance < 5.0:
+                                                                                                :] and 0.0 < distance < params['sb']:
                 sb += 1
                 string2 = string2 + (
                     'Salt_Bridge' + '\t\t' + atom1 + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + atom2 + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
@@ -192,7 +226,7 @@ def myfunction(filename):
                         distance) + '\n')
             # VAN_DER_WAALS---------VAN_DER_WAALS---------VAN_DER_WAALS---------VAN_DER_WAALS---------VAN_DER_WAALS---------VAN_DER_WAALS---------
             if aa1 in aavdw[:] and atom1 in ligvdw[:] and aa2 in aavdw[:] and atom2 in ligvdw[
-                                                                                        :] and 0.0 < distance < 5.5:
+                                                                                        :] and 0.0 < distance < params['vdw']:
                 vdw += 1
                 print('{}'.format(distance))
                 string2 = string2 + (
@@ -206,7 +240,7 @@ def myfunction(filename):
                     coordinates1 = AromaticArray[chaincode1]
                     coordinates2 = AromaticArray[chaincode2]
                     aromaticdistance = np.linalg.norm(coordinates1 - coordinates2)
-                    if (aromaticdistance < 7.2):
+                    if (aromaticdistance < params['aaspi']):
                         string2 = string2 + (
                             'Pi_stacking  ' + '\t\t' + atom1 + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + atom2 + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
                                 aromaticdistance) + '\n')
@@ -230,7 +264,7 @@ def myfunction(filename):
                     coordinates1 = AromaticArray[chaincode1]
                     coordinates2 = np.array([New['X'].iloc[j], New['Y'].iloc[j], New['Z'].iloc[j]])
                     aromaticdistance = np.linalg.norm(coordinates1 - coordinates2)
-                    if (3.4 < aromaticdistance < 4.0):
+                    if (params['aactn_beg'] < aromaticdistance < params['aactn_end']):
                         ctn += 1
                         string2 = string2 + (
                             'Cation_Aryl' + '\t\t' + 'centroid' + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + atom2 + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
@@ -243,7 +277,7 @@ def myfunction(filename):
                     coordinates1 = np.array([New['X'].iloc[i], New['Y'].iloc[i], New['Z'].iloc[i]])
                     coordinates2 = AromaticArray[chaincode2]
                     aromaticdistance = np.linalg.norm(coordinates1 - coordinates2)
-                    if (3.4 < aromaticdistance < 4.0):
+                    if (params['aactn_beg'] < aromaticdistance < params['aactn_end']):
                         ctn += 1
                         string2 = string2 + (
                             'Cation_Aryl' + '\t\t' + atom1 + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + 'centroid' + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
@@ -257,7 +291,7 @@ def myfunction(filename):
                     coordinates1 = AromaticArray[chaincode1]
                     coordinates2 = np.array([New['X'].iloc[j], New['Y'].iloc[j], New['Z'].iloc[j]])
                     aromaticdistance = np.linalg.norm(coordinates1 - coordinates2)
-                    if (0 < aromaticdistance < 5.3):
+                    if (0 < aromaticdistance < params['aaspi']):
                         spi += 1
                         string2 = string2 + (
                             'Sulfur_Aryl  ' + '\t\t' + 'centroid' + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + atom2 + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
@@ -270,7 +304,7 @@ def myfunction(filename):
                     coordinates1 = np.array([New['X'].iloc[i], New['Y'].iloc[i], New['Z'].iloc[i]])
                     coordinates2 = AromaticArray[chaincode2]
                     aromaticdistance = np.linalg.norm(coordinates1 - coordinates2)
-                    if (0 < aromaticdistance < 5.3):
+                    if (0 < aromaticdistance < params['aaspi']):
                         spi += 1
                         string2 = string2 + (
                             'Sulfur_Aryl' + '\t\t' + atom1 + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + 'centroid' + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
@@ -284,7 +318,7 @@ def myfunction(filename):
                     coordinates1 = AromaticArray[chaincode1]
                     coordinates2 = np.array([New['X'].iloc[j], New['Y'].iloc[j], New['Z'].iloc[j]])
                     aromaticdistance = np.linalg.norm(coordinates1 - coordinates2)
-                    if (2.0 < aromaticdistance < 3.0):
+                    if (params['aaan_beg'] < aromaticdistance < params['aaan_end']):
                         an += 1
                         string2 = string2 + (
                             'Anion_Aryl' + '\t\t' + 'centroid' + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + atom2 + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
@@ -297,7 +331,7 @@ def myfunction(filename):
                     coordinates1 = np.array([New['X'].iloc[i], New['Y'].iloc[i], New['Z'].iloc[i]])
                     coordinates2 = AromaticArray[chaincode2]
                     aromaticdistance = np.linalg.norm(coordinates1 - coordinates2)
-                    if (2.0 < aromaticdistance < 3.0):
+                    if (params['aaan_beg']< aromaticdistance < params['aaan_end']):
                         an += 1
                         string2 = string2 + (
                             'Anion_Aryl' + '\t\t' + atom1 + '\t\t' + aa1 + '\t\t' + chaincode1 + '\t\t' + 'centroid' + '\t\t' + aa2 + '\t\t' + chaincode2 + '\t\t' + str(
