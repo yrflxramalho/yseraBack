@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CNH</title>
+
+    <script>
+
+      function load() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const imageName = urlParams.get('name');
+        console.log('img name');
+        console.log(imageName);
+        console.log(queryString);
+
+        const imgCrop = document.querySelector('#imgCrop');
+        const imgFull = document.querySelector('#imgComplete');
+
+        const urlPlate = `http://142.93.246.46:4001/output/${imageName}.png`;
+        const urlComplete = `http://142.93.246.46:4001/outputComplete/${imageName}.png`;
+
+        imgCrop.setAttribute('src',urlPlate)
+        imgFull.setAttribute('src', urlComplete)
+
+
+        const data = {
+          url : urlComplete,
+        }
+
+        fetch("http://104.248.127.161:8000/url", {
+          method: 'POST', 
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+
+          },
+          body: JSON.stringify(data),
+          
+        }).then(function(response) {
+            return response.text();
+        }).then(function(data) {
+          const resultPlate = document.querySelector('#cnhResult');
+          resultPlate.innerHTML = 'Resultados: ' + data;
+
+        });
+
+
+      }
+
+
+    </script>
+
+  </head>
+  <body onLoad="load()">
+    <h1 id="cnhResult">Carregando...</h1>
+    <div class="div">
+      
+      <img src="" id="imgCrop" class="imgCrop">
+      <img src="" id="imgComplete" class="imgComplete">
+    </div>
+  </body>
+</html>
+<style>
+  .div {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .imgCrop {
+    width: 200px;
+    height: 200px;
+  }
+  .imgCrop {
+    display: flex;
+    flex: 1;
+    
+  }
+
+
+</style>
